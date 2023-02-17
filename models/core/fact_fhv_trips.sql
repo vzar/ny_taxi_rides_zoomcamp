@@ -1,7 +1,7 @@
 {{ config(materialized='table') }}
 
 
-trips_unioned as (
+with trips_unioned as (
     select *, 
         'FHV' as service_type
     from {{ ref('stg_fhv_tripdata') }}
@@ -9,11 +9,11 @@ trips_unioned as (
 
 
 dim_zones as (
-    select * from {{ ref('dim_zones') }}
+    select * from  {{ ref('dim_zones') }}
     where borough != 'Unknown'
 )
 select 
-    trips_unioned.service_type,
+    trips_unioned.service_type, 
     trips_unioned.pickup_locationid, 
     pickup_zone.borough as pickup_borough, 
     pickup_zone.zone as pickup_zone, 
